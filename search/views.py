@@ -53,6 +53,26 @@ def search(request):
             }, status=200)
     return HttpResponseNotFound()
 
+def home(request):
+    results = []
+    query = ""
+
+    if not pt.started():
+        pt.init()
+    
+    if request.method == "POST":
+        query = request.POST.get("query", "")
+        query = normalize_to_english(remove_nonalphanum(query))
+
+        # Load the model
+        file_path = os.path.join(os.getcwd(), "model.pkl")
+        with open(file_path, "rb") as f:
+            model = pickle.load(f)
+            queries_df = pd.DataFrame([{"qid": "1", "query": query}])
+            result = model.transform(queries_df).sort_values(by=['rank'], ascending=True)[:50]
+            results = result.to_dict(orient="records")
+    
+    return render(request, "serp.html", {"query": query, "results": results})
 
 def hi(request):
     return  JsonResponse({
