@@ -1,0 +1,23 @@
+runtime: python39  # Ensure compatibility with Django 4.1
+
+entrypoint: gunicorn -b :$PORT tp4.wsgi:application
+
+handlers:
+- url: /static
+  static_dir: static/
+
+- url: /.*
+  script: auto
+
+env_variables:
+  DJANGO_SETTINGS_MODULE: "tp4.settings"
+  SECRET_KEY: "django-insecure-_oj*1^0#yg0l!=ezx-97mh40y)@u!&#fq(e0mzxaqy*%$hyek_"
+  DEBUG: "False"
+
+instance_class: F2
+
+automatic_scaling:
+  target_cpu_utilization: 0.65
+  target_throughput_utilization: 0.75
+  min_instances: 1
+  max_instances: 5
