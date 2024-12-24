@@ -1,4 +1,4 @@
-runtime: python39  # Ensure compatibility with Django 4.1
+runtime: python310  # Use Python 3.10 or higher
 
 entrypoint: gunicorn -b :$PORT tp4.wsgi:application
 
